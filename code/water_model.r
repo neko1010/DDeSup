@@ -8,7 +8,9 @@ library(rstanarm)
 setwd("C:/Users/nicholaskolarik/DDeSuP/")
 
 ## Load the stack
-#s <- raster::stack("./data/2017_stack.tif")
+s <- raster::stack("./data/2017_stack.tif")
+names(s) <- c('GSW', 'Elevation', 'Aspect', 'Slope', 'TPI', 'TWI', 'Hydric', 'Temp', 'Precip')
+plot(s)
 
 ## Pairs plots to check for colinear vars
 #pairs(na.omit(s))
@@ -124,4 +126,12 @@ plot(twi.mod, pars = 'beta')
 plot(hydric.mod, pars = 'beta')
 plot(temp.mod, pars = 'beta')
 plot(precip.mod, pars = 'beta')
+
+Sys.time()
+## weights that informed this model -> elev 0.436, TPI 0.033, Temp 0.53
+nonsense <-  stan_glm(GSW ~ Elevation + TPI + Temp,data = df.sbst, family = "binomial" (link =  "logit"))
+plot(nonsense, pars = 'beta')
+Sys.time()
+
+
 
