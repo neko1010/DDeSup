@@ -46,9 +46,6 @@ loo_model_weights(loo_list)
 plot(ip.mod, pars = 'beta')
 plot(ip.mod.topo, pars = 'beta')
 
-## everything 9:24
-model1 <- stan_glm(GSW ~ Elevation + Aspect + Slope + TPI + TWI + Hydric + Temp + Precip,data = df.sbst, family = "binomial" (link =  "logit"), QR =T )
-Sys.time()
 
 plot(ip.mod, pars = "beta")
 plot(ip.mod.topo, pars = "beta")
@@ -86,3 +83,36 @@ mae(df.sbst$GSW, ip.mod.yhat)
 
 
 
+## everything 
+model1 <- stan_glm(GSW ~ Elevation + Aspect + Slope + TPI + TWI + Hydric + Temp + Precip,data = df.sbst, family = "binomial" (link =  "logit"), QR =T )
+Sys.time()
+
+
+## dropping hydric
+model2 <- stan_glm(GSW ~ Elevation + Aspect + Slope + TPI + TWI + Temp + Precip,data = df.sbst, family = "binomial" (link =  "logit"), QR =T )
+Sys.time()
+
+## dropping hydric, tpi
+model3 <- stan_glm(GSW ~ Elevation + Aspect + Slope + TWI + Temp + Precip,data = df.sbst, family = "binomial" (link =  "logit"), QR =T )
+Sys.time()
+
+## dropping hydric, TPI, and Aspect
+model4 <- stan_glm(GSW ~ Elevation + Slope + TWI + Temp + Precip,data = df.sbst, family = "binomial" (link =  "logit"), QR =T )
+Sys.time()
+
+
+plot(model1, pars = 'beta')
+plot(model2, pars = 'beta')
+plot(model3, pars = 'beta') ## plots seem better! 
+plot(model4, pars = 'beta')
+
+loo.mod1 <- loo(model1)
+loo.mod2 <- loo(model2)
+loo.mod3 <- loo(model3)
+loo.mod4 <- loo(model4)
+
+mod.compare <- loo_compare(loo.mod1, loo.mod2, loo.mod3, loo.mod4, loo.ip.mod)
+
+loo.list2 <- list(loo.mod1, loo.mod2, loo.mod3, loo.mod4, loo.ip.mod)
+
+loo_model_weights(loo.list2)
